@@ -67,5 +67,5 @@
         "*.sln": "*.csproj",
         "*.slnx": "*.csproj"
     },
-    "dotnet.defaultSolution": "My_project.slnx"
+    "dotnet.defaultSolution": "Reto-Team-02.slnx"
 }

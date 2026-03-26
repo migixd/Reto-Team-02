@@ -6,15 +6,25 @@ using InputSystem = UnityEngine.InputSystem;
 public class Move : MonoBehaviour
 {
    public float speed =5f;
+   public float jumpForce = 5f;
+   public bool isGrounded = true;
+    public float minGroundNormalY = 0.5f;
+   private Rigidbody rb;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        rb = GetComponent<Rigidbody>();
+        if (rb == null)
+        {
+            Debug.LogError("Move requiere un Rigidbody en el mismo GameObject.");
+        }
     }
 
     // Update is called once per frame
     void Update() 
     {
+
         if (Keyboard.current.wKey.isPressed)
         {
             Vector3 direction = new Vector3(0, 0, 1);
@@ -35,25 +45,28 @@ public class Move : MonoBehaviour
             Vector3 direction = new Vector3(1, 0, 0);
             transform.Translate(direction * speed * Time.deltaTime);
         } 
-        else if (Keyboard.current.wKey.isPressed && Keyboard.current.aKey.isPressed)
+        else if (Keyboard.current.spaceKey.wasPressedThisFrame && isGrounded)
         {
-            Vector3 direction = new Vector3(-1, 0, 1).normalized;
-            transform.Translate(direction * speed * Time.deltaTime);
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            isGrounded = false;
         }
-        else if (Keyboard.current.wKey.isPressed && Keyboard.current.dKey.isPressed)
+       
+    }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        foreach (ContactPoint contact in collision.contacts)
         {
-            Vector3 direction = new Vector3(1, 0, 1).normalized;
-            transform.Translate(direction * speed * Time.deltaTime);
+            if (contact.normal.y >= minGroundNormalY)
+            {
+                isGrounded = true;
+                return;
+            }
         }
-        else if (Keyboard.current.sKey.isPressed && Keyboard.current.aKey.isPressed)
-        {
-            Vector3 direction = new Vector3(-1, 0, -1).normalized;
-            transform.Translate(direction * speed * Time.deltaTime);
-        }
-        else if (Keyboard.current.sKey.isPressed && Keyboard.current.dKey.isPressed)
-        {
-            Vector3 direction = new Vector3(1, 0, -1).normalized;
-            transform.Translate(direction * speed * Time.deltaTime);
-        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        isGrounded = false;
     }
 }

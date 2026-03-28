@@ -3,35 +3,43 @@ using UnityEngine;
 
 public class SensorManager : MonoBehaviour
 {
-        public GameObject good_crop;
-        public GameObject bad_crop;
-        public List<GameObject> Positions;
-        public GameObject prueba;
+    public GameObject good_cropCarrot;
+    public GameObject bad_cropCarrot;
+    public GameObject good_cropCorn;
+    public GameObject bad_cropCorn;
+    public List<GameObject> PositionsCarrot;
+    public List<GameObject> PositionsCorn;
+    public GameObject prueba;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public void SetupSensors(SensorInfo sensorInfo)
-
-    { foreach (var pos in Positions)
+    {
+        foreach (var pos in PositionsCarrot)
         {
             if (sensorInfo.humedad > 0.5)
             {
-                var crop= Instantiate(good_crop, pos.transform.position, Quaternion.identity);
-
-                
+                var crop = Instantiate(good_cropCarrot, pos.transform.position, Quaternion.identity);
             }
             else
             {
-                var crop = Instantiate(bad_crop, pos.transform.position, Quaternion.identity);
+                var crop = Instantiate(bad_cropCarrot, pos.transform.position, Quaternion.identity);
                 crop.transform.localScale = pos.transform.localScale;
                 pos.SetActive(false);
-
             }
-        }   
+        }
+
+        foreach (var pos in PositionsCorn)
+        {
+            if (sensorInfo.humedad > 0.5)
+            {
+                var crop = Instantiate(good_cropCorn, pos.transform.position, Quaternion.identity);
+            }
+            else
+            {
+                var crop = Instantiate(bad_cropCorn, pos.transform.position, Quaternion.identity);
+                crop.transform.localScale = pos.transform.localScale;
+                pos.SetActive(false);
+            }
+        }
     }
-
-
-    
-       
-        
-
- }
+}
